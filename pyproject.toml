@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dwg-lens"
+version = "0.1.0"
+description = "DWG 图纸体检：在写查看器之前，先搞清你会丢什么"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "dwg-lens contributors" }]
+keywords = ["dwg", "cad", "autocad", "parser", "diagnostics"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+
+[project.scripts]
+dwg-lens = "dwglens.__main__:main"
+
+[tool.setuptools]
+packages = ["dwglens"]

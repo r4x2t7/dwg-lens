@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# 永远不要把真实图纸提交进仓库
+*.dwg
+*.dxf
+*.bak
+report.html
