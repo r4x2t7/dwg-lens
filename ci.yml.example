@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 单元测试
+        run: python -m unittest discover -s tests -v
+
+      - name: 冒烟测试（合成样本跑一遍 CLI）
+        shell: python
+        run: |
+          import json, struct, pathlib, subprocess, sys
+          p = pathlib.Path("smoke.dwg")
+          head = b"AC1018" + b"\x00" * 6 + struct.pack("<I", 0)
+          p.write_bytes(head + b"\x00" * 0x200 + b"FHyAppModul\x00")
+          r = subprocess.run([sys.executable, "-m", "dwglens", str(p), "--json"],
+                             capture_output=True, text=True)
+          assert r.returncode == 0, r.stderr
+          d = json.loads(r.stdout)
+          assert d["risk"] == "high", d["risk"]
+          assert d["version_code"] == "AC1018"
+          print("smoke ok:", d["version_name"], d["risk"])
